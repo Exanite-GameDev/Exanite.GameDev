@@ -40,18 +40,18 @@ jobs:
           submodules: false
           lfs: false
 
-      - name: Initialize Exanite.GameDev submodule
+      - name: Initialize Exanite.Engine submodule
         run: |
           git config --global url."https://x-access-token:${{ secrets._GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
-          git submodule update --init --recursive projects/Exanite.GameDev
+          git submodule update --init --recursive projects/Exanite.Engine
 
       - name: Setup build system
         run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem
-        working-directory: projects/Exanite.GameDev
+        working-directory: projects/Exanite.Engine
 
       - name: Build
         run: dotnet run --project projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem -- package --project ${{ env.EXANITE_PROJECT_NAME }}
-        working-directory: projects/Exanite.GameDev
+        working-directory: projects/Exanite.Engine
 
       - name: Run program and capture
         run: |
@@ -61,14 +61,14 @@ jobs:
           # export DYLD_PRINT_RPATHS=1
           
           # Explicitly set ICD path (for testing)
-          # export VK_ICD_FILENAMES="./projects/Exanite.GameDev/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/MoltenVK_icd.json.disabled"
+          # export VK_ICD_FILENAMES="./projects/Exanite.Engine/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/MoltenVK_icd.json.disabled"
           
           # Switch to MoltenVK
-          mv ./projects/Exanite.GameDev/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/MoltenVK_icd.json.disabled ./submodules/Exanite.GameDev/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/MoltenVK_icd.json
-          rm ./projects/Exanite.GameDev/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/libkosmickrisp_icd.json
+          mv ./projects/Exanite.Engine/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/MoltenVK_icd.json.disabled ./submodules/Exanite.Engine/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/MoltenVK_icd.json
+          rm ./projects/Exanite.Engine/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/Resources/vulkan/icd.d/libkosmickrisp_icd.json
           
           # Run the program
-          ./projects/Exanite.GameDev/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/MacOS/${{ env.EXANITE_PROJECT_NAME }} --no-crash-popup &
+          ./projects/Exanite.Engine/outputs/packages/${{ env.EXANITE_PROJECT_NAME }}/${{ env.EXANITE_PROJECT_NAME }}_Mac.app/Contents/MacOS/${{ env.EXANITE_PROJECT_NAME }} --no-crash-popup &
           APP_PID=$!
           
           # Wait for engine to initialize
@@ -106,4 +106,4 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: Packages
-          path: projects/Exanite.GameDev/outputs/packages
+          path: projects/Exanite.Engine/outputs/packages

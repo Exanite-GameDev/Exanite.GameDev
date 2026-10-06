@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      EXANITE_BUILD_OUTPUT: projects/Exanite.GameDev/outputs/native
+      EXANITE_BUILD_OUTPUT: projects/Exanite.Engine/outputs/native
 
     steps:
 
@@ -105,26 +105,26 @@ jobs:
           fetch-depth: 0
           filter: tree:0
 
-      - name: Initialize Exanite.GameDev submodule
+      - name: Initialize Exanite.Engine submodule
         run: |
           git config --global url."https://x-access-token:${{ secrets._GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
-          git submodule update --init --recursive projects/Exanite.GameDev
+          git submodule update --init --recursive projects/Exanite.Engine
 
       - name: Fetch Slang tags
-        working-directory: projects/Exanite.GameDev/native/slang
+        working-directory: projects/Exanite.Engine/native/slang
         run: |
           git fetch https://github.com/shader-slang/slang.git "refs/tags/*:refs/tags/*"
 
       - name: Restore
-        working-directory: projects/Exanite.GameDev
+        working-directory: projects/Exanite.Engine
         run: dotnet restore -p:Configuration=Release -p:Platform="Any CPU"
 
       - name: Setup build system
-        working-directory: projects/Exanite.GameDev
+        working-directory: projects/Exanite.Engine
         run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem -p:Configuration=Release -p:Platform="Any CPU" --no-restore
 
       - name: Build
-        working-directory: projects/Exanite.GameDev
+        working-directory: projects/Exanite.Engine
         run: dotnet run --project projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem -p:Configuration=Release -p:Platform="Any CPU" --no-restore -- build-${{ matrix.output }}
 
       # This currently sets RPath information on Mac and Linux
@@ -166,7 +166,7 @@ jobs:
       # This helps with debugging since the contents vary per platform
       - name: Display build folder contents
         shell: pwsh
-        working-directory: projects/Exanite.GameDev/outputs/cache/cmake-ci
+        working-directory: projects/Exanite.Engine/outputs/cache/cmake-ci
         run: |
           Get-ChildItem -Recurse | Select-Object -ExpandProperty FullName
 
