@@ -64,8 +64,8 @@ jobs:
                       "com.lunarg.vulkan.glm",
                       "com.lunarg.vulkan.volk",
                       "com.lunarg.vulkan.vma",
-                      "com.lunarg.vulkan.debug"
-                      "com.lunarg.vulkan.x64"
+                      "com.lunarg.vulkan.debug",
+                      "com.lunarg.vulkan.x64",
                       "com.lunarg.vulkan.arm64"
                   )
                 
@@ -98,7 +98,7 @@ jobs:
                       "com.lunarg.vulkan.glm",
                       "com.lunarg.vulkan.volk",
                       "com.lunarg.vulkan.vma",
-                      "com.lunarg.vulkan.ios",
+                      "com.lunarg.vulkan.ios"
                   )
           
                   sudo $installerExe $args
