@@ -45,13 +45,17 @@ jobs:
           git config --global url."https://x-access-token:${{ secrets._GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
           git submodule update --init --recursive projects/Exanite.Engine
 
-      - name: Setup build system
-        run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem
+      - name: Restore
         working-directory: projects/Exanite.Engine
+        run: dotnet restore --configuration Release
 
-      - name: Build
-        run: dotnet run --project projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem -- package --project ${{ env.EXANITE_PROJECT_NAME }}
+      - name: Setup build system
         working-directory: projects/Exanite.Engine
+        run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem --configuration Release --no-restore
+
+      - name: Package
+        working-directory: projects/Exanite.Engine
+        run: dotnet run --project projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem --configuration Release --no-build -- package --project ${{ env.EXANITE_PROJECT_NAME }}
 
       - name: Run program and capture
         run: |
