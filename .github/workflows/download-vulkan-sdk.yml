@@ -18,6 +18,10 @@ jobs:
 
     steps:
 
+      # See:
+      # Windows: https://vulkan.lunarg.com/doc/view/latest/windows/getting_started.html
+      # Linux: https://vulkan.lunarg.com/doc/view/latest/linux/getting_started.html
+      # Mac: https://vulkan.lunarg.com/doc/view/latest/mac/getting_started.html
       - name: Install Vulkan SDK
         shell: pwsh
         run: |
@@ -56,10 +60,13 @@ jobs:
                       "--accept-licenses",
                       "--default-answer",
                       "--confirm-command", "install",
-                      "com.lunarg.vulkan.vma",
-                      "com.lunarg.vulkan.volk",
+                      "com.lunarg.vulkan.sdl2",
                       "com.lunarg.vulkan.glm",
+                      "com.lunarg.vulkan.volk",
+                      "com.lunarg.vulkan.vma",
                       "com.lunarg.vulkan.debug"
+                      "com.lunarg.vulkan.x64"
+                      "com.lunarg.vulkan.arm64"
                   )
                 
                   Start-Process -FilePath $installerPath -ArgumentList $args -Wait -NoNewWindow
@@ -86,11 +93,12 @@ jobs:
                       "--accept-licenses",
                       "--default-answer",
                       "--confirm-command", "install",
-                      "com.lunarg.vulkan.kosmic",
-                      "com.lunarg.vulkan.vma",
-                      "com.lunarg.vulkan.volk",
+                      "com.lunarg.vulkan.usr",
+                      "com.lunarg.vulkan.sdl2",
                       "com.lunarg.vulkan.glm",
-                      "com.lunarg.vulkan.usr"
+                      "com.lunarg.vulkan.volk",
+                      "com.lunarg.vulkan.vma",
+                      "com.lunarg.vulkan.ios",
                   )
           
                   sudo $installerExe $args
