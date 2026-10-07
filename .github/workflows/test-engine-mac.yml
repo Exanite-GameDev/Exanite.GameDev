@@ -94,21 +94,21 @@ jobs:
           sleep 2
 
       - name: Upload screenshot
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Screenshot
           path: Screenshot.png
 
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Program logs
           path: "/Users/runner/Library/Application Support/Exanite/${{ env.EXANITE_PROJECT_NAME }}/Logs/"
 
       - name: Upload package
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: Packages
           path: projects/Exanite.Engine/outputs/packages
