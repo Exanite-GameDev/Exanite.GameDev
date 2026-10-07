@@ -121,17 +121,18 @@ jobs:
         run: |
           git fetch https://github.com/shader-slang/slang.git "refs/tags/*:refs/tags/*"
 
+      # -p:Configuration=Release -p:Platform="Any CPU" is used because MSVC clobbers the properties' default values
       - name: Restore
         working-directory: projects/Exanite.Engine
-        run: dotnet restore
+        run: dotnet restore -p:Configuration=Release -p:Platform="Any CPU"
 
       - name: Setup build system
         working-directory: projects/Exanite.Engine
-        run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem --configuration Release --no-restore
+        run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem -p:Configuration=Release -p:Platform="Any CPU" --no-restore
 
       - name: Build
         working-directory: projects/Exanite.Engine
-        run: dotnet run --project projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem --configuration Release --no-build -- build-${{ matrix.output }}
+        run: dotnet run --project projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem -p:Configuration=Release -p:Platform="Any CPU" --no-build -- build-${{ matrix.output }}
 
       # This currently sets RPath information on Mac and Linux
       - name: Post-process binaries
