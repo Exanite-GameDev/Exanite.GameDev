@@ -20,4 +20,37 @@
   "patch": {
     "enabled": true
   },
+
+  "ignorePaths": [
+    "archive/**",
+    "global.json"
+  ],
+
+  "nuget": {
+    "ignorePaths": [
+      "archive/**",
+      "global.json"
+    ],
+  },
+
+  "packageRules": [
+    {
+      "groupName": "Exanite",
+      "matchPackageNames": [
+        "Exanite**",
+      ],
+    },
+    {
+      "groupName": "Exanite.Silk2.NET",
+      "matchPackageNames": [
+        "Exanite.Silk2.NET**",
+      ],
+    },
+    {
+      "groupName": "Exanite.Silk3.NET",
+      "matchPackageNames": [
+        "Exanite.Silk3.NET**",
+      ],
+    }
+  ]
 }
