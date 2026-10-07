@@ -9,6 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Exanite.Engine" Version="0.0.0-preview-dev-nuget-publishing.6682"/>
+    <PackageReference Include="Exanite.Engine" Version="0.0.0-preview-dev-ui.6701"/>
   </ItemGroup>
 </Project>
