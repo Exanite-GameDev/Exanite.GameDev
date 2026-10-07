@@ -121,9 +121,13 @@ jobs:
         run: |
           git fetch https://github.com/shader-slang/slang.git "refs/tags/*:refs/tags/*"
 
+      - name: Restore
+        working-directory: projects/Exanite.Engine
+        run: dotnet restore
+
       - name: Setup build system
         working-directory: projects/Exanite.Engine
-        run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem --configuration Release
+        run: dotnet build projects/Exanite.Engine.BuildSystem/Exanite.Engine.BuildSystem --configuration Release --no-restore
 
       - name: Build
         working-directory: projects/Exanite.Engine
