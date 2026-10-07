@@ -97,7 +97,7 @@ jobs:
             git-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/.gitmodules') }}
 
       - name: Checkout repository
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5.1.0
         with:
           token: ${{ secrets._GITHUB_TOKEN }}
           persist-credentials: true
