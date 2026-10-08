@@ -25,6 +25,10 @@ jobs:
       - name: Install Vulkan SDK
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+          Set-StrictMode -Version Latest
+          
           $version = "latest"
           $installPath = Join-Path $pwd "vulkan_sdk"
           

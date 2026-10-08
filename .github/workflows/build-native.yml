@@ -138,6 +138,10 @@ jobs:
       - name: Post-process binaries
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+          Set-StrictMode -Version Latest
+          
           $outputFolder = "${{ env.EXANITE_BUILD_OUTPUT }}"
           $files = Get-ChildItem -Path $outputFolder -Filter * -Recurse -File
           foreach ($file in $files) {
@@ -181,6 +185,10 @@ jobs:
       - name: Display binary information
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+          Set-StrictMode -Version Latest
+          
           $outputFolder = "${{ env.EXANITE_BUILD_OUTPUT }}"
           if (-not (Test-Path $outputFolder)) {
               return
@@ -290,6 +298,10 @@ jobs:
       - name: Display binary information
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+          Set-StrictMode -Version Latest
+          
           $folder = "combined"
           $files = Get-ChildItem -Path $folder -Filter "*" -Recurse -File
           foreach ($file in $files) {
