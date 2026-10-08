@@ -35,6 +35,12 @@
 
   "packageRules": [
     {
+      "groupName": "dotnet-sdk",
+      "matchPackageNames": [
+        "dotnet-sdk",
+      ],
+    },
+    {
       "groupName": "Exanite",
       "matchPackageNames": [
         "Exanite**",
@@ -51,6 +57,6 @@
       "matchPackageNames": [
         "Exanite.Silk3.NET**",
       ],
-    }
+    },
   ]
 }
