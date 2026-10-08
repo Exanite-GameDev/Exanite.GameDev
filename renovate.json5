@@ -45,6 +45,8 @@
       "matchPackageNames": [
         "Exanite**",
       ],
+
+      "allowedVersions": "!/-preview-/"
     },
     {
       "groupName": "Exanite.Silk2.NET",
