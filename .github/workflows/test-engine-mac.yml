@@ -36,14 +36,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
         with:
-          token: ${{ secrets._GITHUB_TOKEN }}
+          token: ${{ secrets._GITHUB_TOKEN_READ_SUBMODULES }}
           persist-credentials: true
           submodules: false
           lfs: false
 
       - name: Initialize Exanite.Engine submodule
         run: |
-          git config --global url."https://x-access-token:${{ secrets._GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://x-access-token:${{ secrets._GITHUB_TOKEN_READ_SUBMODULES }}@github.com/".insteadOf "https://github.com/"
           git submodule update --init --recursive projects/Exanite.Engine
 
       - name: Restore
