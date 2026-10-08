@@ -1,0 +1,74 @@
+name: Update parent repo
+
+on:
+  workflow_call:
+    inputs:
+      target_repo:
+        type: string
+        required: true
+      target_submodule:
+        type: string
+        required: true
+      target_branch:
+        type: string
+        required: true
+    secrets:
+      _GITHUB_TOKEN_SUBMODULE_SYNC:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    name: Update parent repo
+    runs-on: ubuntu-24.04
+
+    steps:
+
+      - name: Checkout target repo
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.target_repo }}
+          token: ${{ secrets._GITHUB_TOKEN_SUBMODULE_SYNC }}
+          submodules: false
+          lfs: false
+
+      - name: Select target branch
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+          Set-StrictMode -Version Latest
+
+          if (git ls-remote --heads origin "refs/heads/${{ inputs.target_branch }}") {
+            git fetch --depth 1 origin "${{ inputs.target_branch }}"
+            git checkout -B "${{ inputs.target_branch }}" FETCH_HEAD
+          }
+          else {
+            Write-Host "Branch '${{ inputs.target_branch }}' does not exist in target repo, creating it"
+            git checkout -b "${{ inputs.target_branch }}"
+          }
+
+      - name: Update submodule reference
+        run: git update-index --cacheinfo 160000,${{ github.sha }},${{ inputs.target_submodule }}
+
+      - name: Show git status
+        run: git status
+
+      - name: Commit and push if necessary
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $true
+          Set-StrictMode -Version Latest
+
+          if (-not (git status --porcelain)) {
+            Write-Host "Submodule reference is already up to date"
+            exit 0
+          }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update ${{ inputs.target_submodule }} to ${{ github.sha }}"
+          git push origin "HEAD:refs/heads/${{ inputs.target_branch }}"
