@@ -88,7 +88,7 @@ jobs:
           echo "date=$(Get-Date -Format "yyyy-MM-dd")" >> $env:GITHUB_OUTPUT
 
       - name: Cache .git folder
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .git
           key: git-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/.gitmodules') }}-build-native-${{ steps.get-date.outputs.date }}
