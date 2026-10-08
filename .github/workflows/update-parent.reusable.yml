@@ -4,16 +4,20 @@ on:
   workflow_call:
     inputs:
       target_repo:
+        description: Repository containing the submodule, in owner/repo format.
         type: string
         required: true
       target_submodule:
+        description: Path of the submodule in the target repository.
         type: string
         required: true
       target_branch:
+        description: Branch in the target repository to update. Created if it does not exist using the default branch.
         type: string
         required: true
     secrets:
       _GITHUB_TOKEN_SUBMODULE_SYNC:
+        description: PAT with write access to the target repo.
         required: true
 
 permissions:
