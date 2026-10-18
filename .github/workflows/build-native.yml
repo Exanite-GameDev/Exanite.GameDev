@@ -276,8 +276,9 @@ jobs:
           name: ${{ matrix.output }}-${{ matrix.os }}
           path: ${{ env.EXANITE_BUILD_OUTPUT }}
 
-  combine-outputs:
-    runs-on: ubuntu-latest
+  combine:
+    name: Combine artifacts
+    runs-on: ubuntu-24.04
 
     if: always()
     needs: [build]
