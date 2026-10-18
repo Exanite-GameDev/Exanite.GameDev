@@ -145,33 +145,33 @@ jobs:
           $outputFolder = "${{ env.EXANITE_BUILD_OUTPUT }}"
           $files = Get-ChildItem -Path $outputFolder -Filter * -Recurse -File
           foreach ($file in $files) {
-              switch ($true) {
-                  $IsWindows {}
-                  $IsLinux {
-                      # Set RPath
-                      patchelf --set-rpath "`$ORIGIN" $($file.FullName)
-          
-                      # Set SoName
-                      patchelf --set-soname $($file.Name) $($file.FullName)
-                  }
-                  $IsMacOS {
-                      $rpaths = otool -l $($file.FullName) |
-                          Select-String -Pattern "path (.*) \(offset \d+\)" |
-                          ForEach-Object { $_.Matches.Groups[1].Value }
-                      
-                      # Clear existing rpaths
-                      foreach ($rpath in $rpaths) {
-                          install_name_tool -delete_rpath "$rpath" $($file.FullName)
-                      }
-                      
-                      # Set RPath
-                      install_name_tool -add_rpath "@loader_path" $($file.FullName)
-                      
-                      # Set install name
-                      $newName = "@rpath/$($file.Name)"
-                      install_name_tool -id "$newName" $($file.FullName)
-                  }
+            switch ($true) {
+              $IsWindows {}
+              $IsLinux {
+                # Set RPath
+                patchelf --set-rpath "`$ORIGIN" $($file.FullName)
+    
+                # Set SoName
+                patchelf --set-soname $($file.Name) $($file.FullName)
               }
+              $IsMacOS {
+                $rpaths = otool -l $($file.FullName) |
+                  Select-String -Pattern "path (.*) \(offset \d+\)" |
+                  ForEach-Object { $_.Matches.Groups[1].Value }
+                
+                # Clear existing rpaths
+                foreach ($rpath in $rpaths) {
+                  install_name_tool -delete_rpath "$rpath" $($file.FullName)
+                }
+                
+                # Set RPath
+                install_name_tool -add_rpath "@loader_path" $($file.FullName)
+                
+                # Set install name
+                $newName = "@rpath/$($file.Name)"
+                install_name_tool -id "$newName" $($file.FullName)
+              }
+            }
           }
 
       # This helps with debugging since the contents vary per platform
@@ -191,83 +191,83 @@ jobs:
           
           $outputFolder = "${{ env.EXANITE_BUILD_OUTPUT }}"
           if (-not (Test-Path $outputFolder)) {
-              return
+            return
           }
       
           $files = Get-ChildItem -Path $outputFolder -Filter "*" -Recurse -File
           foreach ($file in $files) {
-              Write-Host "Showing binary information for $($file.Name):"
-          
-              try {
-                  switch ($true) {
-                      $IsWindows {
-                          Write-Host "Symbols for $($file.Name):"
-                          dumpbin /EXPORTS $($file.FullName)
-          
-                          Write-Host ""
-                          Write-Host "Dependencies for $($file.Name):"
-                          dumpbin /DEPENDENTS $($file.FullName)
-                      }
-                      $IsLinux {
-                          Write-Host "Symbols for $($file.Name):"
-                          nm -D -g $($file.FullName)
-              
-                          Write-Host ""
-                          Write-Host "Dependencies for $($file.Name):"
-                          ldd $file.FullName
-              
-                          Write-Host ""
-                          Write-Host "Required glibc version for $($file.Name):"
-                          objdump -T $($file.FullName) | Select-String "GLIBC_[.\d]+" | ForEach-Object { $_.Matches.Groups[0].Value } | Sort-Object -Unique
-          
-                          Write-Host ""
-                          Write-Host "Soname for $($file.Name):"
-                          $soname = readelf -d $($file.FullName) | Select-String "SONAME"
-                          Write-Host $soname
-          
-                          Write-Host ""
-                          Write-Host "RPath for $($file.Name):"
-                          $rpath = readelf -d $($file.FullName) | Select-String "RPATH|RUNPATH"
-                          if ($rpath) {
-                              Write-Host $rpath
-                          } else {
-                              Write-Host "No RPath found"
-                          }
-          
-                          Write-Host ""
-                          Write-Host "Readelf for $($file.Name):"
-                          readelf -d $($file.FullName)
-                      }
-                      $IsMacOS {
-                          Write-Host "Symbols for $($file.Name):"
-                          nm -gU $($file.FullName)
-          
-                          Write-Host ""
-                          Write-Host "Dependencies for $($file.Name):"
-                          otool -L $($file.FullName)
-          
-                          Write-Host ""
-                          Write-Host "Install name for $($file.Name):"
-                          otool -D $($file.FullName)
-            
-                          Write-Host ""
-                          Write-Host "RPath for $($file.Name):"
-                          $rpath = otool -l $file | Select-String -Pattern "LC_RPATH" -Context 1, 2
-                          if ($rpath) {
-                              Write-Host $rpath
-                          } else {
-                              Write-Host "No RPath found"
-                          }
-          
-                          Write-Host ""
-                          Write-Host "Required macOS version for $($file.Name):"
-                          otool -l $($file.FullName) | Select-String "LC_BUILD_VERSION" -Context 0,3
-                      }
-                  }
-          
+            Write-Host "Showing binary information for $($file.Name):"
+        
+            try {
+              switch ($true) {
+                $IsWindows {
+                  Write-Host "Symbols for $($file.Name):"
+                  dumpbin /EXPORTS $($file.FullName)
+  
                   Write-Host ""
+                  Write-Host "Dependencies for $($file.Name):"
+                  dumpbin /DEPENDENTS $($file.FullName)
+                }
+                $IsLinux {
+                  Write-Host "Symbols for $($file.Name):"
+                  nm -D -g $($file.FullName)
+      
+                  Write-Host ""
+                  Write-Host "Dependencies for $($file.Name):"
+                  ldd $file.FullName
+      
+                  Write-Host ""
+                  Write-Host "Required glibc version for $($file.Name):"
+                  objdump -T $($file.FullName) | Select-String "GLIBC_[.\d]+" | ForEach-Object { $_.Matches.Groups[0].Value } | Sort-Object -Unique
+  
+                  Write-Host ""
+                  Write-Host "Soname for $($file.Name):"
+                  $soname = readelf -d $($file.FullName) | Select-String "SONAME"
+                  Write-Host $soname
+  
+                  Write-Host ""
+                  Write-Host "RPath for $($file.Name):"
+                  $rpath = readelf -d $($file.FullName) | Select-String "RPATH|RUNPATH"
+                  if ($rpath) {
+                    Write-Host $rpath
+                  } else {
+                    Write-Host "No RPath found"
+                  }
+  
+                  Write-Host ""
+                  Write-Host "Readelf for $($file.Name):"
+                  readelf -d $($file.FullName)
+                }
+                $IsMacOS {
+                  Write-Host "Symbols for $($file.Name):"
+                  nm -gU $($file.FullName)
+  
+                  Write-Host ""
+                  Write-Host "Dependencies for $($file.Name):"
+                  otool -L $($file.FullName)
+  
+                  Write-Host ""
+                  Write-Host "Install name for $($file.Name):"
+                  otool -D $($file.FullName)
+    
+                  Write-Host ""
+                  Write-Host "RPath for $($file.Name):"
+                  $rpath = otool -l $file | Select-String -Pattern "LC_RPATH" -Context 1, 2
+                  if ($rpath) {
+                    Write-Host $rpath
+                  } else {
+                    Write-Host "No RPath found"
+                  }
+  
+                  Write-Host ""
+                  Write-Host "Required macOS version for $($file.Name):"
+                  otool -l $($file.FullName) | Select-String "LC_BUILD_VERSION" -Context 0,3
+                }
               }
-              catch {}
+      
+              Write-Host ""
+            }
+            catch {}
           }
 
       - name: Upload artifacts
@@ -306,9 +306,9 @@ jobs:
           $folder = "combined"
           $files = Get-ChildItem -Path $folder -Filter "*" -Recurse -File
           foreach ($file in $files) {
-              Write-Host "Showing binary information for $($file.Name):"
-              file $($file.FullName)
-              Write-Host
+            Write-Host "Showing binary information for $($file.Name):"
+            file $($file.FullName)
+            Write-Host
           }
 
       - name: Upload artifacts

@@ -33,15 +33,15 @@ jobs:
           $installPath = Join-Path $pwd "vulkan_sdk"
           
           $os = switch ($true) {
-              $IsWindows { "windows" }
-              $IsLinux   { "linux" }
-              $IsMacOS   { "mac" }
+            $IsWindows { "windows" }
+            $IsLinux   { "linux" }
+            $IsMacOS   { "mac" }
           }
           
           $installerDownloadExtension = switch ($true) {
-              $IsWindows { ".exe" }
-              $IsLinux   { ".tar.xz" }
-              $IsMacOS   { ".zip" }
+            $IsWindows { ".exe" }
+            $IsLinux   { ".tar.xz" }
+            $IsMacOS   { ".zip" }
           }
           
           # The URL format seems to be flexible and just require the vulkan_sdk prefix
@@ -57,56 +57,56 @@ jobs:
           Write-Host "Installing:"
           New-Item -Path $installPath -ItemType Directory -Force > $null
           switch ($true) {
-              $IsWindows {
-                  # Run the installer
-                  $args = @(
-                      "--root", $installPath,
-                      "--accept-licenses",
-                      "--default-answer",
-                      "--confirm-command", "install",
-                      "com.lunarg.vulkan.sdl2",
-                      "com.lunarg.vulkan.glm",
-                      "com.lunarg.vulkan.volk",
-                      "com.lunarg.vulkan.vma",
-                      "com.lunarg.vulkan.debug",
-                      "com.lunarg.vulkan.x64",
-                      "com.lunarg.vulkan.arm64"
-                  )
-                
-                  Start-Process -FilePath $installerPath -ArgumentList $args -Wait -NoNewWindow
-              }
-              $IsLinux {
-                  # Simply unzip to destination
-                  # --strip-components=1 ignores the first level folder
-                  tar -xf $installerPath -C $installPath --strip-components=1
-              }
-              $IsMacOS {
-                  # Unzip first to a temporary location
-                  $unzippedInstallerPath = "unzipped_installer"
-                  Expand-Archive -Path $installerPath -DestinationPath $unzippedInstallerPath -Force
-          
-                  # Find the installer
-                  Install-Module -Name Glob -Scope CurrentUser -Force
-                  $installerExe = Find-GlobFile -Include "**/Contents/MacOS/vulkansdk-macOS*" . | Select-Object -First 1
-          
-                  # Run the installer
-                  chmod +x $installerExe
-          
-                  $args = @(
-                      "--root", $installPath,
-                      "--accept-licenses",
-                      "--default-answer",
-                      "--confirm-command", "install",
-                      "com.lunarg.vulkan.usr",
-                      "com.lunarg.vulkan.sdl2",
-                      "com.lunarg.vulkan.glm",
-                      "com.lunarg.vulkan.volk",
-                      "com.lunarg.vulkan.vma",
-                      "com.lunarg.vulkan.ios"
-                  )
-          
-                  sudo $installerExe $args
-              }
+            $IsWindows {
+              # Run the installer
+              $args = @(
+                "--root", $installPath,
+                "--accept-licenses",
+                "--default-answer",
+                "--confirm-command", "install",
+                "com.lunarg.vulkan.sdl2",
+                "com.lunarg.vulkan.glm",
+                "com.lunarg.vulkan.volk",
+                "com.lunarg.vulkan.vma",
+                "com.lunarg.vulkan.debug",
+                "com.lunarg.vulkan.x64",
+                "com.lunarg.vulkan.arm64"
+              )
+              
+              Start-Process -FilePath $installerPath -ArgumentList $args -Wait -NoNewWindow
+            }
+            $IsLinux {
+              # Simply unzip to destination
+              # --strip-components=1 ignores the first level folder
+              tar -xf $installerPath -C $installPath --strip-components=1
+            }
+            $IsMacOS {
+              # Unzip first to a temporary location
+              $unzippedInstallerPath = "unzipped_installer"
+              Expand-Archive -Path $installerPath -DestinationPath $unzippedInstallerPath -Force
+      
+              # Find the installer
+              Install-Module -Name Glob -Scope CurrentUser -Force
+              $installerExe = Find-GlobFile -Include "**/Contents/MacOS/vulkansdk-macOS*" . | Select-Object -First 1
+      
+              # Run the installer
+              chmod +x $installerExe
+      
+              $args = @(
+                "--root", $installPath,
+                "--accept-licenses",
+                "--default-answer",
+                "--confirm-command", "install",
+                "com.lunarg.vulkan.usr",
+                "com.lunarg.vulkan.sdl2",
+                "com.lunarg.vulkan.glm",
+                "com.lunarg.vulkan.volk",
+                "com.lunarg.vulkan.vma",
+                "com.lunarg.vulkan.ios"
+              )
+      
+              sudo $installerExe $args
+            }
           }
           
           Write-Host "Current directory contents:"
