@@ -82,8 +82,7 @@ jobs:
             $sourceContext = "${{ github.sha }}"
           }
           
-          $commitMessage = "Update ${{ inputs.target_submodule }} for $sourceContext"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m $commitMessage
+          git commit -m "Update ${{ inputs.target_submodule }} for $sourceContext"
           git push origin "HEAD:refs/heads/${{ inputs.target_branch }}"
