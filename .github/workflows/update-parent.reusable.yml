@@ -74,13 +74,7 @@ jobs:
             exit 0
           }
 
-          $sourceContext = ($env:SOURCE_COMMIT_MESSAGE -split "`n")[0].Trim()
-          if ($sourceContext) {
-            $sourceContext = "`"$sourceContext`" (${{ github.sha }})"
-          }
-          else {
-            $sourceContext = "${{ github.sha }}"
-          }
+          $sourceContext = "${{ github.sha }}"
           
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
