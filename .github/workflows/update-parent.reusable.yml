@@ -69,7 +69,7 @@ jobs:
           $PSNativeCommandUseErrorActionPreference = $true
           Set-StrictMode -Version Latest
 
-          if (-not (git status --porcelain)) {
+          if (-not (git status --porcelain --untracked-files=no)) {
             Write-Host "Submodule reference is already up to date"
             exit 0
           }
